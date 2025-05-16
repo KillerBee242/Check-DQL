@@ -83,22 +83,22 @@ INSERT INTO Employe_Projet (Employee_Num_E, Project_Num_P, Role) VALUES
 
 ```
 
+-- ------------------------------------------------------------------------------------
+
 -- Langage de Requête de Données SQL (DQL)
 -- Système d'Information sur la Participation des Employés
 
--- ------------------------------------------------------------------------------------
-### 1. Écrire une requête pour récupérer les noms des employés qui sont affectés à plus
-   d'un projet, incluant le nombre total de projets pour chaque employé.
+### 1. Écrire une requête pour récupérer les noms des employés qui sont affectés à plus d'un projet, incluant le nombre total de projets pour chaque employé.
 ```
 SELECT
-    E.Name AS Nom_Employe,
+    E.Nom AS Nom_Employe,
     COUNT(EP.Project_Num_P) AS Nombre_Total_Projets_Affectes
 FROM
-    Employee E
+    Employe E
 JOIN
-    Employee_Project EP ON E.Num_E = EP.Employee_Num_E
+    Employe_Projet EP ON E.Num_E = EP.Employee_Num_E
 GROUP BY
-    E.Num_E, E.Name
+    E.Num_E, E.Nom
 HAVING
     COUNT(EP.Project_Num_P) > 1
 ORDER BY
@@ -106,47 +106,44 @@ ORDER BY
 ```
 
 -- ------------------------------------------------------------------------------------
-### 2. Écrire une requête pour récupérer la liste des projets gérés par chaque département,
-   incluant le libellé du département et le nom du responsable.
+### 2. Écrire une requête pour récupérer la liste des projets gérés par chaque département, incluant le libellé du département et le nom du responsable.
 ```
 SELECT
     D.Label AS Libelle_Departement,
     D.Manager_Name AS Nom_Responsable_Departement,
-    P.Title AS Titre_Projet,
-    P.Start_Date AS Date_Debut,
-    P.End_Date AS Date_Fin
+    P.Titre AS Titre_Projet,
+    P.Date_Debut,
+    P.Date_Fin
 FROM
-    Department D
+    Departement D
 JOIN
-    Project P ON D.Num_S = P.Department_Num_S
+    Projet P ON D.Num_S = P.Department_Num_S
 ORDER BY
     Libelle_Departement, Titre_Projet;
 ```
 
 -- ------------------------------------------------------------------------------------
-### 3. Écrire une requête pour récupérer les noms des employés travaillant sur le projet
-  "Refonte Site Web," incluant leurs rôles dans le projet.
+### 3. Écrire une requête pour récupérer les noms des employés travaillant sur le projet "Refonte Site Web," incluant leurs rôles dans le projet.
 --  (Note : Remplacez "Refonte Site Web" par un titre de projet réel de vos données si différent)
 ```
 SELECT
-    E.Name AS Nom_Employe,
+    E.Nom AS Nom_Employe,
     EP.Role AS Role_Employe_Dans_Projet,
-    P.Title AS Titre_Projet
+    P.Titre AS Titre_Projet
 FROM
-    Employee E
+    Employe E
 JOIN
-    Employee_Project EP ON E.Num_E = EP.Employee_Num_E
+    Employe_Projet EP ON E.Num_E = EP.Employee_Num_E
 JOIN
-    Project P ON EP.Project_Num_P = P.Num_P
+    Projet P ON EP.Project_Num_P = P.Num_P
 WHERE
-    P.Title = 'Refonte Site Web' -- Assurez-vous que ce titre de projet existe dans votre table Project
+    P.Titre = 'Refonte Site Web' -- Assurez-vous que ce titre de projet existe dans votre table Projet
 ORDER BY
     Nom_Employe;
 ```
 
 -- ------------------------------------------------------------------------------------
-### 4. Écrire une requête pour récupérer le département ayant le plus grand nombre d'employés,
-   incluant le libellé du département, le nom du responsable, et le nombre total d'employés.
+### 4. Écrire une requête pour récupérer le département ayant le plus grand nombre d'employés, incluant le libellé du département, le nom du responsable, et le nombre total d'employés.
 -- Pour MySQL, PostgreSQL, SQLite :
 ```
 SELECT
@@ -154,9 +151,9 @@ SELECT
     D.Manager_Name AS Nom_Responsable,
     COUNT(E.Num_E) AS Nombre_Total_Employes
 FROM
-    Department D
+    Departement D
 JOIN
-    Employee E ON D.Num_S = E.Department_Num_S
+    Employe E ON D.Num_S = E.Department_Num_S
 GROUP BY
     D.Num_S, D.Label, D.Manager_Name
 ORDER BY
@@ -200,71 +197,67 @@ LIMIT 1;
 ```
 
 -- ------------------------------------------------------------------------------------
-### 5. Écrire une requête pour récupérer les noms et postes des employés gagnant un salaire
-   supérieur à 60 000, incluant les noms de leurs départements.
+### 5. Écrire une requête pour récupérer les noms et postes des employés gagnant un salaire supérieur à 60.000, incluant les noms de leurs départements.
 ```
 SELECT
-    E.Name AS Nom_Employe,
-    E.Position AS Poste_Employe,
-    E.Salary AS Salaire,
+    E.Nom AS Nom_Employe,
+    E.Poste AS Poste_Employe,
+    E.Salaire,
     D.Label AS Nom_Departement
 FROM
-    Employee E
+    Employe E
 JOIN
-    Department D ON E.Department_Num_S = D.Num_S
+    Departement D ON E.Department_Num_S = D.Num_S
 WHERE
-    E.Salary > 60000 -- En supposant que le salaire est stocké comme un type numérique
+    E.Salaire > 60000 -- En supposant que le salaire est stocké comme un type numérique
 ORDER BY
     Salaire DESC, Nom_Employe;
 ```
 
 -- ------------------------------------------------------------------------------------
-### 6. Écrire une requête pour récupérer le nombre d'employés affectés à chaque projet,
-   incluant le titre du projet.
+### 6. Écrire une requête pour récupérer le nombre d'employés affectés à chaque projet, incluant le titre du projet.
 ```
 SELECT
-    P.Title AS Titre_Projet,
+    P.Titre AS Titre_Projet,
     COUNT(EP.Employee_Num_E) AS Nombre_Employes_Affectes
 FROM
-    Project P
+    Projet P
 LEFT JOIN -- Utilisation de LEFT JOIN pour inclure les projets avec zéro employé affecté
-    Employee_Project EP ON P.Num_P = EP.Project_Num_P
+    Employe_Projet EP ON P.Num_P = EP.Project_Num_P
 GROUP BY
-    P.Num_P, P.Title
+    P.Num_P, P.Titre
 ORDER BY
     Nombre_Employes_Affectes DESC, Titre_Projet;
 ```
 
 -- ------------------------------------------------------------------------------------
-### 7. Écrire une requête pour récupérer un résumé des rôles que les employés ont
---    dans différents projets, incluant le nom de l'employé, le titre du projet et le rôle.
+### 7. Écrire une requête pour récupérer un résumé des rôles que les employés ont dans différents projets, incluant le nom de l'employé, le titre du projet et le rôle.
 ```
 SELECT
-    E.Name AS Nom_Employe,
-    P.Title AS Titre_Projet,
+    E.Nom AS Nom_Employe,
+    P.Titre AS Titre_Projet,
     EP.Role AS Role_Employe
 FROM
-    Employee E
+    Employe E
 JOIN
-    Employee_Project EP ON E.Num_E = EP.Employee_Num_E
+    Employe_Projet EP ON E.Num_E = EP.Employee_Num_E
 JOIN
-    Project P ON EP.Project_Num_P = P.Num_P
+    Projet P ON EP.Project_Num_P = P.Num_P
 ORDER BY
     Nom_Employe, Titre_Projet;
 ```
 
 -- ------------------------------------------------------------------------------------
-### 8. Écrire une requête pour récupérer la dépense salariale totale pour chaque département,
-   incluant le libellé du département et le nom du responsable.
+### 8. Écrire une requête pour récupérer la dépense salariale totale pour chaque département, incluant le libellé du département et le nom du responsable.
 ```
 SELECT
     D.Label AS Libelle_Departement,
     D.Manager_Name AS Nom_Responsable,
-    SUM(E.Salary) AS Depense_Salariale_Totale
+    SUM(E.Salaire) AS Depense_Salariale_Totale
 FROM
-    Department D
+    Departement D
 JOIN
-    Employee E ON D.Num_S = E.Department_Num_S
+    Employe E ON D.Num_S = E.Department_Num_S
 GROUP BY
     D.Num_S, D.Label, D.Manager_Name
 ORDER BY
